@@ -58,6 +58,9 @@ public class BossSpawn {
 		if (timeOfDeath == 0) {
 			section.set("mostID", current.getMostSignificantBits());
 			section.set("leastID", current.getLeastSignificantBits());
+		} else {
+			section.set("mostID", null);
+			section.set("leastID", null);
 		}
 	}
 	

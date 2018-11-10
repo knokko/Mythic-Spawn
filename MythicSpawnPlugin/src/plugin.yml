@@ -1,0 +1,8 @@
+name: MythicSpawns
+main: nl.knokko.mythicmobs.spawner.plugin.MythicSpawnsPlugin
+version: 1.0
+commands:
+  mythicspawns:
+    description: Add and remove spawns for Mythic Mobs bosses
+    useage: /mythicspawns add/remove
+    aliases: [ms, mythics, mspawns, mspawn, mythicspawn]

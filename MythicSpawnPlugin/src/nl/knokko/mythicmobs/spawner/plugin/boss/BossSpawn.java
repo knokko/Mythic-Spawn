@@ -1,5 +1,6 @@
 package nl.knokko.mythicmobs.spawner.plugin.boss;
 
+import java.util.Collection;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -8,6 +9,8 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+
+import nl.knokko.mythicmobs.spawner.plugin.MythicSpawnsPlugin;
 
 public class BossSpawn {
 	
@@ -23,6 +26,8 @@ public class BossSpawn {
 	private long timeOfDeath;
 	private UUID current;
 	
+	private long previousTime;
+	
 	private boolean isSpawning;
 	
 	public BossSpawn(String bossName, String worldName, int spawnX, int spawnY, int spawnZ, int deathDelay) {
@@ -32,6 +37,7 @@ public class BossSpawn {
 		this.spawnY = spawnY;
 		this.spawnZ = spawnZ;
 		this.respawnDelay = deathDelay;
+		this.previousTime = System.currentTimeMillis();
 	}
 	
 	public BossSpawn(ConfigurationSection section) {
@@ -45,6 +51,7 @@ public class BossSpawn {
 		if (timeOfDeath == 0) {
 			current = new UUID(section.getLong("mostID"), section.getLong("leastID"));
 		}
+		this.previousTime = System.currentTimeMillis();
 	}
 	
 	public void save(ConfigurationSection section) {
@@ -103,9 +110,18 @@ public class BossSpawn {
 	}
 	
 	public void update() {
-		if (timeOfDeath != 0 && System.currentTimeMillis() - timeOfDeath >= respawnDelay) {
-			spawn();
+		long time = System.currentTimeMillis();
+		if (timeOfDeath != 0) {
+			if (time - timeOfDeath >= respawnDelay)
+				spawn();
+			Collection<MessageEntry> messages = MythicSpawnsPlugin.getInstance().getMessages();
+			for (MessageEntry message : messages) {
+				long sendTime = timeOfDeath + respawnDelay - message.getPriorTime();
+				if (sendTime > previousTime && sendTime <= time)
+					Bukkit.broadcastMessage(message.getMessage(bossName));
+			}
 		}
+		previousTime = time;
 	}
 	
 	public UUID getCurrentID() {

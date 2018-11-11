@@ -4,5 +4,5 @@ version: 1.0
 commands:
   mythicspawns:
     description: Add and remove spawns for Mythic Mobs bosses
-    useage: /mythicspawns add/remove
+    useage: /mythicspawns add/remove/addmessage/removemessage
     aliases: [ms, mythics, mspawns, mspawn, mythicspawn]
